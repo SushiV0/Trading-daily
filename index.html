@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trader's Journal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/inter-ui/3.19.3/inter.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            font-size: 21px;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        }
+        .content {
+            padding: 0 40px;
+        }
+        .journal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 15px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 31px;
+        }
+        .date-container {
+            display: flex;
+            align-items: center;
+        }
+        .date-label {
+            margin-right: 10px;
+            font-size: 21px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section-title {
+            border-left: 4px solid #0066cc;
+            padding-left: 15px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 22px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            resize: none;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            text-align: left;
+            font-size: 20px;
+        }
+        th {
+            background-color: #f9f9f9;
+        }
+        input {
+            width: 100%;
+            padding: 10px 5px;
+            border: none;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+        }
+        .add-row {
+            text-align: center;
+            padding: 15px;
+            color: #0066cc;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 21px;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            background-color: #f9f9f9;
+        }
+        .add-row:hover {
+            background-color: #f0f0f0;
+        }
+        .remove-btn {
+            cursor: pointer;
+            color: #999;
+            text-align: center;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        .remove-btn:hover {
+            color: #ff0000;
+        }
+        .print-btn {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            float: right;
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            transition: background-color 0.2s;
+        }
+        .print-btn:hover {
+            background-color: #0055aa;
+        }
+        
+        /* Responsywność */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .content {
+                padding: 0 20px;
+            }
+            .journal-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .date-container {
+                margin-top: 15px;
+            }
+            .print-btn {
+                margin-top: 15px;
+                float: none;
+                width: 100%;
+            }
+        }
+        
+        @media print {
+            .print-btn, .add-row, .remove-btn {
+                display: none;
+            }
+            body {
+                background-color: white;
+            }
+            .container {
+                box-shadow: none;
+                padding: 0;
+            }
+            textarea, input {
+                box-shadow: none;
+            }
+            table {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <div class="journal-header">
+                <h1>TRADER'S JOURNAL</h1>
+                <div class="date-container">
+                    <div class="date-label">Date:</div>
+                    <input type="text" id="date-input" placeholder="DD/MM/YYYY">
+                </div>
+                <button class="print-btn" onclick="window.print()">Print PDF</button>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Daily Plan</div>
+                <textarea placeholder="Write your plan for today's trading session..."></textarea>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Market Conditions</div>
+                <textarea placeholder="Describe current market conditions, trends, important levels..."></textarea>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Trades</div>
+                <table id="trades-table">
+                    <thead>
+                        <tr>
+                            <th>Instrument</th>
+                            <th>Direction</th>
+                            <th>Result</th>
+                            <th>Time</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" placeholder="e.g. EUR/USD"></td>
+                            <td><input type="text" placeholder="Long/Short"></td>
+                            <td><input type="text" placeholder="+/- pips"></td>
+                            <td><input type="text" placeholder="00:00"></td>
+                            <td class="remove-btn" onclick="resetRow(this)">×</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="add-row" onclick="addTradeRow()">+ Add another trade</div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Observations & Conclusions</div>
+                <textarea placeholder="Write your observations, conclusions and thoughts about today's trades..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-resize textareas as content grows
+        document.querySelectorAll('textarea').forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+            
+            // Initialize height
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        });
+
+        // Reset first row values
+        function resetRow(btn) {
+            const row = btn.parentElement;
+            const isFirstRow = row.parentElement.children[0] === row;
+            
+            if (isFirstRow) {
+                // Reset first row values
+                const inputs = row.querySelectorAll('input');
+                inputs.forEach(input => {
+                    input.value = '';
+                });
+            } else {
+                // Remove added rows
+                row.remove();
+            }
+        }
+
+        // Add new trade row
+        function addTradeRow() {
+            const table = document.getElementById('trades-table').getElementsByTagName('tbody')[0];
+            const newRow = document.createElement('tr');
+            
+            newRow.innerHTML = `
+                <td><input type="text" placeholder="e.g. EUR/USD"></td>
+                <td><input type="text" placeholder="Long/Short"></td>
+                <td><input type="text" placeholder="+/- pips"></td>
+                <td><input type="text" placeholder="00:00"></td>
+                <td class="remove-btn" onclick="resetRow(this)">×</td>
+            `;
+            
+            table.appendChild(newRow);
+        }
+    </script>
+</body>
+</html>
